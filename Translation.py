@@ -132,15 +132,14 @@ def text2speech():
     :param text:
     :return: voice
     """
-    global count
 
     text = ipt_text.get(0.0, 5000.0).strip()
     text = re.sub('\n', ' ', text)
 
     tts = gTTS(text)
-    tts.save(f'voice{count%2}.mp3')
-    playsound(f'voice{count%2}.mp3')
-    count += 1
+    tts.save('voice.mp3')
+    playsound('voice.mp3')
+
 
 
 def clean():
@@ -151,7 +150,6 @@ if __name__ == '__main__':
 
 
     temp = ''
-    count = 0
     window = tk.Tk()
     window.title('翻译')
     window.geometry('600x600')
