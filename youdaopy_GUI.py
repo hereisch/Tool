@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-#
+import os
 import re
 from tkinter import scrolledtext
 from urllib import request,parse
@@ -6,6 +7,17 @@ import requests
 import json,time,random
 import hashlib
 import tkinter as tk
+from gtts import gTTS
+from playsound import playsound
+from threading import Thread
+
+
+def async(f):
+    def wrapper(*args, **kwargs):
+        thr = Thread(target=f, args=args, kwargs=kwargs)
+        thr.start()
+
+    return wrapper
 
 
 def md5_jiami(str_data):
@@ -94,6 +106,7 @@ def clicked():
         trans_text = youdao(text)
         result.delete(1.0, 5000.0)
         result.insert(tk.INSERT, trans_text)
+        temp = text
 
 
 def listen(event):
@@ -109,21 +122,38 @@ def listen(event):
         trans_text = re.sub('。','。\n  ',trans_text)
         result.delete(1.0,5000.0)
         result.insert(tk.INSERT, '  '+ trans_text)
+        temp = text
 
+
+@async
+def text2speech():
+    """
+    文字转语音，google tts,需修改tts.py源码中 com->cn
+    :param text:
+    :return: voice
+    """
+    global count
+
+    text = ipt_text.get(0.0, 5000.0).strip()
+    text = re.sub('\n', ' ', text)
+
+    tts = gTTS(text)
+    tts.save(f'voice{count%2}.mp3')
+    playsound(f'voice{count%2}.mp3')
+    count += 1
 
 
 def clean():
     ipt_text.delete(1.0,5000.0)
 
-if __name__ == '__main__':
 
-    # text = input("请输入:")
-    # youdao(text)
+if __name__ == '__main__':
 
 
     temp = ''
+    count = 0
     window = tk.Tk()
-    window.title('youdao-py')
+    window.title('翻译')
     window.geometry('600x600')
     ipt_text = scrolledtext.ScrolledText(window, width=70, height=20)
     ipt_text.pack()
@@ -132,15 +162,14 @@ if __name__ == '__main__':
     ipt_text.bind('<Return>',listen)
     trans = tk.Button(window, text="翻译",command=clicked,font=("Microsoft YaHei", 20))
     trans.grid(column=2, row=1)
-
+    voice = tk.Button(window, text="朗读",command=text2speech,font=("Microsoft YaHei", 20))
+    voice.grid(column=2, row=1)
     clear = tk.Button(window, text="清空",command=clean,font=("Microsoft YaHei", 20))
     clear.grid(column=2, row=0)
 
     result = scrolledtext.ScrolledText(window, width=70, height=20,)
     # trans.pack()
     result.grid(column=0, row=30)
-
-
 
     window.mainloop()
 
