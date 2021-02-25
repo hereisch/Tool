@@ -136,7 +136,7 @@ def text2speech():
     text = ipt_text.get(0.0, 5000.0).strip()
     text = re.sub('\n', ' ', text)
 
-    tts = gTTS(text)
+    tts = gTTS(text,tld='cn')
     tts.save('voice.mp3')
     playsound('voice.mp3')
 
