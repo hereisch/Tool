@@ -113,6 +113,8 @@ def listen(event):
     global temp
     text = ipt_text.get(0.0,5000.0).strip()
     text = re.sub('\n',' ',text)
+    # text = re.sub('\\x0c','fi',text)
+    # text = re.sub('\\x0b','ff',text)
     if text != temp:
         print('发送。。。。。。')
         clean()
@@ -135,7 +137,8 @@ def text2speech():
 
     text = ipt_text.get(0.0, 5000.0).strip()
     text = re.sub('\n', ' ', text)
-
+    # text = re.sub('\\x0c', 'fi', text)
+    # text = re.sub('\\x0b', 'ff', text)
     tts = gTTS(text,tld='cn')
     tts.save('voice.mp3')
     playsound('voice.mp3')
